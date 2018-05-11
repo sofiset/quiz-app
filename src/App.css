@@ -21,6 +21,17 @@
 .App-intro {
   font-size: large;
 }
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/*.flex-child {
+  align-self: center;
+}*/
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

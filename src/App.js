@@ -1,35 +1,24 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
 import * as utils  from './waste-quiz/utils'
-import wasteWizardData from './waste-quiz/wasteWizardData.json';
+import Quiz from './waste-quiz/Quiz'
+import wasteWizardData from './waste-quiz/wasteWizardData.json'
 
 const DEFAULT_STATE = {
-
-      numQuestionsPerRound: 10,
-      numOptionsShown: 3,
-      roundNumber: 1,
-
-      isQuizDone: false,
-      currentScore: 0,
-      currentAnswer: null,
-      currentQuestionIndex: 0,
-      currentAnswerStatus: null,
-
-      shouldShowQuestion: true
+  numQuestionsPerRound: 10,
+  numOptionsShown: 7,
+  roundNumber: 1,
+  totalScore: 0,
+  quizStarted: true,
+  shouldShowQuestion: true
 }
 
 class App extends Component {
+  _quiz = null
 
   constructor(props) {
-
     super(props)
-
-    this.checkIsQuizDone = this.checkIsQuizDone.bind(this)
-    this.checkAnswer = this.checkAnswer.bind(this)
-    this.startNewGame = this.startNewGame.bind(this)
-
     const uniqueAnswerOptions = utils.getAllUniqueAnswerOptions(wasteWizardData)
-
     this.state = {
       ...DEFAULT_STATE,
       uniqueAnswerOptions,
@@ -49,45 +38,14 @@ class App extends Component {
       // .then(data => this.setState({ data }))
   }
 
-  render() {
+  handleQuizDone = ({ score }) => {
+    this.setState({
+      quizStarted: false,
+      totalScore: this.state.totalScore + score
+    })
+  }
 
-    const {
-      currentQuestionIndex,
-      questions,
-      isQuizDone,
-      currentAnswerStatus,
-      currentScore,
-      shouldShowQuestion,
-      roundNumber
-    } = this.state
-
-    return (
-      <div>
-
-        <p>round number: {roundNumber}</p>
-        <p>score: {currentScore}</p>
-
-        <h1>{currentQuestionIndex+1}) {questions[currentQuestionIndex].title} </h1>
-        <h2>{currentAnswerStatus}</h2>
-        
-        <p>{isQuizDone ? "Done!" : ""}</p>
-
-        {shouldShowQuestion ? 
-          <Question buttonValues={questions[currentQuestionIndex].answer_options}
-            handleAnswer={this.handleAnswer} /> : null
-        }
-
-        {isQuizDone ?
-          <button onClick={this.startNewGame}>Start New Game</button> : null
-        }
-
-        <p>correct answer: { questions[currentQuestionIndex].correct_answer}</p>
-
-      </div>
-    );
-  } 
-
-  startNewGame() {
+  startNewGame = () => {
     const uniqueAnswerOptions = utils.getAllUniqueAnswerOptions(wasteWizardData)
     this.setState({
       ...DEFAULT_STATE,
@@ -97,80 +55,49 @@ class App extends Component {
         wasteWizardData,
         numOptionsShown: DEFAULT_STATE.numOptionsShown,
         numQuestionsPerRound: DEFAULT_STATE.numQuestionsPerRound
-      })
-    });
-
-  }
-
-  handleAnswer = (answer) => {
-
-    const {
-      isQuizDone,
-      currentScore,
-      currentQuestionIndex,
-      numQuestionsPerRound,
-      shouldShowQuestion
-    } = this.state
-
-    if (isQuizDone) {
-      return
-    }
-
-    const f = () => {
-      console.log(this)
-    }
-
-    const isAnswerTrue = this.checkAnswer(answer)
-
-    this.setState({ 
-      currentAnswer: answer,
-      currentAnswerStatus: isAnswerTrue,
-      currentScore: isAnswerTrue ? currentScore+1 : currentScore,
-      currentQuestionIndex: currentQuestionIndex !== numQuestionsPerRound-1? currentQuestionIndex+1 : currentQuestionIndex,
-      
+      }),
+      roundNumber: this.state.roundNumber + 1
     })
-
-    if (this.checkIsQuizDone()) {
-      this.setState({
-        isQuizDone: true,
-        shouldShowQuestion: false
-      }) 
+    // Another option to reset, is to programmaticaly call instance method on <Quiz/>
+    // This is more dirty.
+    if (this._quiz !== null) {
+      // this._quiz.reset()
     }
-
   }
-
-  checkIsQuizDone() {
-    return this.state.currentQuestionIndex === this.state.numQuestionsPerRound-1
-  }
-
-  checkAnswer(answer) {
-     return answer === this.state.questions[this.state.currentQuestionIndex].correct_answer
-  }
-
-}
-
-class Question extends Component {
 
   render() {
-
-    const { buttonValues, handleAnswer } = this.props
+    const {
+      questions,
+      totalScore,
+      roundNumber,
+      quizStarted
+    } = this.state
 
     return (
-      <div>
-        <AnswerOption value={buttonValues[0]} handleAnswer={handleAnswer}/>
-        <AnswerOption value={buttonValues[1]} handleAnswer={handleAnswer}/>
-        <AnswerOption value={buttonValues[2]} handleAnswer={handleAnswer}/>
+      <div className="flex-container">
+        <p>round number: {roundNumber}</p>
+        <p>total score: {totalScore}</p>
+        <hr/>
+        <Quiz
+          ref={r => {
+            // Keep a reference to <Quiz> component instance so I can call its methods later on.
+            this._quiz = r
+          }}
+          started={quizStarted}
+          questions={questions}
+          numQuestionsPerRound={this.state.numQuestionsPerRound}
+          onDone={this.handleQuizDone}
+        />
+        
+        <form>
+          <input type="radio" value="A" name="options"/>
+          <input type="radio" value="B" name="options"/>
+        </form>
+
+        { quizStarted ? null : <button onClick={this.startNewGame} >Start new round</button> }
       </div>
     );
   }
-}
-
-function AnswerOption(props){
-  return (
-    <button type="radio" onClick={() => props.handleAnswer(props.value)}>
-      {props.value}
-    </button>
-  );
 }
 
 

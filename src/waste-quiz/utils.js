@@ -45,7 +45,7 @@ export function getAllUniqueAnswerOptions(data) {
       }
     }
     
-    console.log('unique answer options: ' + uniqueAnswerOptions)
+    console.log('number of unique answer options: ', uniqueAnswerOptions.length)
     return uniqueAnswerOptions
   
   }
@@ -54,16 +54,19 @@ export function getAnswerOptionSet(correctAnswer, allUniqueOptions, totalNumOpti
   
     const possibleOptions = allUniqueOptions
     let answerOptionSet = [correctAnswer]
+    const numUniqueOptions = allUniqueOptions.length
+
+    newtotalNumOptions = totalNumOptions <= numUniqueOptions ? totalNumOptions : numUniqueOptions
   
     // While we still need other answer options...
     while (answerOptionSet.length < totalNumOptions) {
-  
       // Grab random unique description ID
       let index = getRandomIndex(possibleOptions)
-  
+      const possibleOption = possibleOptions[index]
+
       // If not a match, use as incorrect answer options
-      if (possibleOptions[index] !== correctAnswer) {
-        answerOptionSet.push(possibleOptions[index])
+      if (answerOptionSet.indexOf(possibleOption) === -1) {
+        answerOptionSet.push(possibleOption)
       }
     }
   
