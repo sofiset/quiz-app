@@ -80,7 +80,7 @@ export default class Quiz extends Component {
                 /> 
 
                 <p>current score: {numCorrectAnswers}</p>
-                <p>correct answer: { questions[currentQuestionIndex].correct_answer}</p>
+                
             </div>
         )
     }

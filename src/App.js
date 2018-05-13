@@ -54,7 +54,7 @@ class App extends Component {
       questions: utils.createQuestions({
         uniqueAnswerOptions,
         wasteWizardData,
-        dataCoding,
+        
         numOptionsShown: DEFAULT_STATE.numOptionsShown,
         numQuestionsPerRound: DEFAULT_STATE.numQuestionsPerRound
       }),
@@ -77,10 +77,8 @@ class App extends Component {
     } = this.state
 
     return (
-      <div className="flex-container">
-        <p>round number: {roundNumber}</p>
-        <p>total score: {totalScore}</p>
-        <hr/>
+      <div className="app-container">
+
         <Quiz
           ref={r => {
             // Keep a reference to <Quiz> component instance so I can call its methods later on.
@@ -93,6 +91,12 @@ class App extends Component {
         />
 
         { quizStarted ? null : <button onClick={this.startNewGame}>Start new round</button> }
+
+        <div>
+          round number: {roundNumber}<br/>
+          total score: {totalScore}
+        </div>
+
       </div>
     );
   }
