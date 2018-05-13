@@ -3,10 +3,11 @@ import './App.css'
 import * as utils  from './waste-quiz/utils'
 import Quiz from './waste-quiz/Quiz'
 import wasteWizardData from './waste-quiz/wasteWizardData.json'
+import dataCoding from './waste-quiz/dataCoding.json'
 
 const DEFAULT_STATE = {
   numQuestionsPerRound: 10,
-  numOptionsShown: 7,
+  numOptionsShown: 3,
   roundNumber: 1,
   totalScore: 0,
   quizStarted: true,
@@ -18,18 +19,18 @@ class App extends Component {
 
   constructor(props) {
     super(props)
-    const uniqueAnswerOptions = utils.getAllUniqueAnswerOptions(wasteWizardData)
+    const uniqueAnswerOptions = utils.getAllUniqueAnswerOptions(dataCoding)
     this.state = {
       ...DEFAULT_STATE,
       uniqueAnswerOptions,
       questions: utils.createQuestions({
         uniqueAnswerOptions,
         wasteWizardData,
+        dataCoding,
         numOptionsShown: DEFAULT_STATE.numOptionsShown,
         numQuestionsPerRound: DEFAULT_STATE.numQuestionsPerRound
       })
     } 
-
   }
 
   componentWillMount() {
@@ -46,17 +47,19 @@ class App extends Component {
   }
 
   startNewGame = () => {
-    const uniqueAnswerOptions = utils.getAllUniqueAnswerOptions(wasteWizardData)
+    const uniqueAnswerOptions = utils.getAllUniqueAnswerOptions(dataCoding)
     this.setState({
       ...DEFAULT_STATE,
       uniqueAnswerOptions,
       questions: utils.createQuestions({
         uniqueAnswerOptions,
         wasteWizardData,
+        dataCoding,
         numOptionsShown: DEFAULT_STATE.numOptionsShown,
         numQuestionsPerRound: DEFAULT_STATE.numQuestionsPerRound
       }),
-      roundNumber: this.state.roundNumber + 1
+      roundNumber: this.state.roundNumber + 1,
+      totalScore: this.state.totalScore
     })
     // Another option to reset, is to programmaticaly call instance method on <Quiz/>
     // This is more dirty.
@@ -88,13 +91,8 @@ class App extends Component {
           numQuestionsPerRound={this.state.numQuestionsPerRound}
           onDone={this.handleQuizDone}
         />
-        
-        <form>
-          <input type="radio" value="A" name="options"/>
-          <input type="radio" value="B" name="options"/>
-        </form>
 
-        { quizStarted ? null : <button onClick={this.startNewGame} >Start new round</button> }
+        { quizStarted ? null : <button onClick={this.startNewGame}>Start new round</button> }
       </div>
     );
   }

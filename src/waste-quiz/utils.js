@@ -1,24 +1,37 @@
-// { wasteWizardData: {}, numOptionsShown: number, uniqueAnswerOptions: Array<{}>, numQuestionsPerRound: number }
+// { wasteWizardData: {}, numOptionsShown: number, uniqueAnswerOptions: Array<{}>, numQuestionsPerRound: number, dataCoding: {} }
 
 export function createQuestions(options) {
-    const { wasteWizardData, uniqueAnswerOptions, numOptionsShown, numQuestionsPerRound } = options
+    
+    const { wasteWizardData, uniqueAnswerOptions, numOptionsShown, numQuestionsPerRound, dataCoding } = options
     let newQuestions = []
     const keys = Object.keys(wasteWizardData)
     const possibleAnswerOptions = uniqueAnswerOptions
 
     for (let i = 0; i < numQuestionsPerRound; i++) {
 
-        let question = wasteWizardData[getRandomIndex(keys)]
+        const selectedFeature = wasteWizardData[getRandomIndex(keys)]
+        const selectedFeatureAnsId = selectedFeature.DESC_ID
+        const selectedFeatureAnsLabel = getLabelFromId(selectedFeatureAnsId, dataCoding)
 
         newQuestions.push({
-        "title" : question.TITLE,
-        "correct_answer" : question.DESC_ID,
-        "answer_options" : getAnswerOptionSet(question.DESC_ID, possibleAnswerOptions, numOptionsShown)
+          "title" : selectedFeature.TITLE,
+          "correct_answer" : selectedFeatureAnsLabel,
+          "answer_options" : getAnswerOptionSet(selectedFeatureAnsLabel, possibleAnswerOptions, numOptionsShown)
         })
 
     }
 
     return newQuestions
+}
+
+export function getLabelFromId(id, labelsByKey) {
+
+  for (let item in labelsByKey) {
+    if (labelsByKey[item].id === id) {
+      return labelsByKey[item].desc
+    }
+  }
+
 }
 
 
@@ -35,7 +48,7 @@ export function getAllUniqueAnswerOptions(data) {
   
     for (var option, i = 0; option = options[i++];) {
   
-      option = option.DESC_ID
+      option = option.desc
   
       // If name isn't in lookup object, add as key
       if (!(option in lookup)) {
@@ -44,8 +57,7 @@ export function getAllUniqueAnswerOptions(data) {
         uniqueAnswerOptions.push(option)
       }
     }
-    
-    console.log('number of unique answer options: ', uniqueAnswerOptions.length)
+  
     return uniqueAnswerOptions
   
   }
@@ -56,10 +68,10 @@ export function getAnswerOptionSet(correctAnswer, allUniqueOptions, totalNumOpti
     let answerOptionSet = [correctAnswer]
     const numUniqueOptions = allUniqueOptions.length
 
-    newtotalNumOptions = totalNumOptions <= numUniqueOptions ? totalNumOptions : numUniqueOptions
+    const newTotalNumOptions = totalNumOptions <= numUniqueOptions ? totalNumOptions : numUniqueOptions
   
     // While we still need other answer options...
-    while (answerOptionSet.length < totalNumOptions) {
+    while (answerOptionSet.length < newTotalNumOptions) {
       // Grab random unique description ID
       let index = getRandomIndex(possibleOptions)
       const possibleOption = possibleOptions[index]
