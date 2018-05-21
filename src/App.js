@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import './App.css'
 import * as utils  from './waste-quiz/utils'
 import Quiz from './waste-quiz/Quiz'
 import wasteWizardData from './waste-quiz/wasteWizardData.json'
 import dataCoding from './waste-quiz/dataCoding.json'
+import styled from 'styled-components';
 
 const DEFAULT_STATE = {
   numQuestionsPerRound: 10,
@@ -54,7 +54,7 @@ class App extends Component {
       questions: utils.createQuestions({
         uniqueAnswerOptions,
         wasteWizardData,
-        
+        dataCoding,
         numOptionsShown: DEFAULT_STATE.numOptionsShown,
         numQuestionsPerRound: DEFAULT_STATE.numQuestionsPerRound
       }),
@@ -77,7 +77,9 @@ class App extends Component {
     } = this.state
 
     return (
-      <div className="app-container">
+      <AppContainer>
+
+        <Title>wastewizquiz</Title>
 
         <Quiz
           ref={r => {
@@ -88,19 +90,41 @@ class App extends Component {
           questions={questions}
           numQuestionsPerRound={this.state.numQuestionsPerRound}
           onDone={this.handleQuizDone}
+          roundNumber={roundNumber}
+          totalScore={totalScore}
         />
 
-        { quizStarted ? null : <button onClick={this.startNewGame}>Start new round</button> }
+        { quizStarted ? null : <NewRoundButton onClick={this.startNewGame}>Start new round</NewRoundButton> }
 
-        <div>
-          round number: {roundNumber}<br/>
-          total score: {totalScore}
-        </div>
-
-      </div>
+      </AppContainer>
     );
   }
+
+  
 }
 
+const AppContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  color: rgb(52, 61, 70);
+  height: 100%;
+`
+
+const Title = styled.h1`
+  font-size: 1.5em;
+  color: #ff1919;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  margin: 1%;
+`
+const NewRoundButton = styled.button`
+  margin: 2%;
+  padding: 1%;
+  background-color: white;
+`
 
 export default App;

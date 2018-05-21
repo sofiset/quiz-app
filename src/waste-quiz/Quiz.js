@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Question from './Question'
+import Scorecard from './Scorecard'
+import styled from 'styled-components'
 
 const DEFAULT_STATE = {
     currentQuestionIndex: 0,
@@ -62,27 +64,38 @@ export default class Quiz extends Component {
 
 
     render() {
+
         const { questions, started } = this.props
+
         const {
             currentQuestionIndex,
             currentAnswerStatus,
             numCorrectAnswers,
+            roundNumber,
+            totalScore
         } = this.state
+
         return (
-            <div>
-                <h1>{currentQuestionIndex+1}) {questions[currentQuestionIndex].title} </h1>
+
+            <QuizContainer>
+
+                <h1>{questions[currentQuestionIndex].title} </h1>
                 <h2>{currentAnswerStatus}</h2>
                 
                 <Question
                     disabled={!started} 
                     buttonValues={questions[currentQuestionIndex].answer_options}
                     handleAnswer={this.handleAnswer}
-                /> 
-
-                <p>current score: {numCorrectAnswers}</p>
+                />
                 
-            </div>
+                <Scorecard numCorrectAnswers={numCorrectAnswers} />
+
+            </QuizContainer>
         )
     }
 }
+
+const QuizContainer = styled.div`
+    width: 100%;
+`
 

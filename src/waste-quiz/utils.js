@@ -14,7 +14,7 @@ export function createQuestions(options) {
         const selectedFeatureAnsLabel = getLabelFromId(selectedFeatureAnsId, dataCoding)
 
         newQuestions.push({
-          "title" : selectedFeature.TITLE,
+          "title" : capitalizeFirstLetter(selectedFeature.TITLE),
           "correct_answer" : selectedFeatureAnsLabel,
           "answer_options" : getAnswerOptionSet(selectedFeatureAnsLabel, possibleAnswerOptions, numOptionsShown)
         })
@@ -33,7 +33,6 @@ export function getLabelFromId(id, labelsByKey) {
   }
 
 }
-
 
 export function getRandomIndex(arr) {
     // wasteWizardData
@@ -106,4 +105,8 @@ export function shuffleOptions (originalArray) {
     }
   
     return array;
+  }
+
+  function capitalizeFirstLetter (str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
