@@ -6,7 +6,7 @@ export default function Scorecard(props) {
     const { numCorrectAnswers } = props
 
     return (
-        <Card>️️🗑️{ numCorrectAnswers }</Card>
+        <Card>️️🗑️{ numCorrectAnswers }/10</Card>
     )
 }
 

@@ -79,7 +79,7 @@ export default class Quiz extends Component {
 
             <QuizContainer>
 
-                <h1>{questions[currentQuestionIndex].title} </h1>
+                <h1>{questions[currentQuestionIndex].title}? </h1>
                 <h2>{currentAnswerStatus}</h2>
                 
                 <Question

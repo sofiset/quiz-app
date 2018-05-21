@@ -114,6 +114,8 @@ const AppContainer = styled.div`
 `
 
 const Title = styled.h1`
+  text-decoration: underline;
+  text-decoration-color: rgb(52,61,70);;
   font-size: 1.5em;
   color: #ff1919;
   position: fixed;
